@@ -1,0 +1,40 @@
+package org.zerock.ex00.mappers;
+
+import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+
+@ExtendWith(SpringExtension.class)
+@Log4j2
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+public class TimeTest {
+
+    @Autowired(required = false)
+    TimeMapper timeMapper;
+
+    @Test
+    public void test1(){
+
+        log.info(timeMapper.getClass().getName());
+
+        log.info("-------------------");
+
+        log.info(timeMapper.getTime());
+
+        log.info("-------------------");
+
+
+        log.info("-------------------");
+
+
+        log.info("-------------------");
+    }
+    @Test
+    public void test2(){
+        log.info(timeMapper.getTime2());
+    }
+}
