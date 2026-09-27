@@ -3,7 +3,58 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.zerock.ex00.mappers.BoardMapper">
+    <sql id="search">
+        <if test="types != null and keyword != null">
+            <foreach collection="types" item="type" open=" and (" separator="OR" close=")">
+                <choose>
+                    <when test='type.equals("T")'>
+                        title like concat('%',#{keyword},'%')
+                    </when>
+                    <when test='type.equals("C")'>
+                        content like concat('%',#{keyword},'%')
+                    </when>
+                    <when test='type.equals("W")'>
+                        writer like concat('%',#{keyword},'%')
+                    </when>
+                </choose>
+            </foreach>
+        </if>
+    </sql>
     <select id="getList" resultType="BoardVO">
         select * from tbl_board where bno > 0 order by bno desc
     </select>
+
+    <insert id="insert">
+        <selectKey order="AFTER" keyProperty="bno" resultType="long">
+            SELECT currval('tbl_board_bno_seq')
+        </selectKey>
+        insert into tbl_board (title,content,writer)
+        values (#{title},#{content},#{writer})
+    </insert>
+    <select id="getPage" resultType="BoardVO">
+        select * from
+        tbl_board where bno > 0
+        <include refid="search"/>
+        order by bno desc
+        limit #{amount} offset #{skip}
+    </select>
+    <select id="select" resultType="BoardVO">
+        select * from tbl_board where bno = #{bno}
+    </select>
+    <select id="getTotal" resultType="int">
+        select count(bno)
+        from
+        tbl_board
+        where bno > 0
+        <include refid="search"/>
+    </select>
+
+    <update id="update">
+        update tbl_board
+        set title = #{title},
+        content = #{content},
+        updateDate = now()
+        where bno = #{bno}
+    </update>
+
 </mapper>
